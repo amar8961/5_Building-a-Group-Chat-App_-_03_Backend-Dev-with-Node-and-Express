@@ -50,3 +50,42 @@ function signUp(e){
         }).catch(err=>err)
     }
 }
+
+// Sign in
+function signIn(e){
+    // e.preventDefault()
+
+    let emailInp=document.getElementById('email-in').value
+    let passInp=document.getElementById('password-in').value
+
+    if(emailInp.indexOf('@')==-1){
+        alert('Enter a valid Email ID!')
+        return
+    }else if(passInp.length<5){
+        alert("Enter a valid Password!")
+        return
+    }else{
+        document.getElementById('email-in').value=""
+        document.getElementById('password-in').value=""
+
+        let creds={
+            email: emailInp,
+            password:passInp
+        }
+
+        axios({
+                method : 'get',
+                url : `${userUrl}/${JSON.stringify(creds)}`
+            }).then(response=>{
+                console.log(response)
+                if (response.data.code==2){
+                    alert("You have entered an Invalid Password!")
+                }else if(response.data.code==0){
+                    alert("Your email is not registered with us!")
+                }else if(response.data.code==1){
+                    alert("Sign In Successful!")
+                    sessionStorage.setItem('auth', JSON.stringify({token:response.data.token}))
+                }
+        }).catch(err=>console.log(err))
+    }
+}

@@ -25,3 +25,22 @@ exports.createUser=(req, res, next)=>{
         }).catch(err=>console.log(err))
     });
 }
+
+// Sign in
+exports.findUser=(req, res, next)=>{
+    const creds=JSON.parse(req.params.creds)
+    Users.findOne({where: {email:creds.email}})
+    .then(response=>{
+        if (response==null || response==''){
+            res.status(200).send({code:0})
+        }else{
+            bcrypt.compare(creds.password, response.password).then((result)=>{
+                if(result){
+                    res.status(200).send({code:1, token:generateToken(creds.email)})
+                }else{
+                    res.status(200).send({code:2})
+                }
+            });
+        }
+    }).catch(err=>console.log(err))
+}
