@@ -14,22 +14,25 @@
 			<div class="signup">
 				<form>
 					<label for="chk" aria-hidden="true">Sign up</label>
-					<input type="text" name="name" placeholder="Name" required="">
-					<input type="email" name="email" placeholder="Email" required="">
-					<input type="number" name="phone" placeholder="Phone Number" required="">
-					<input type="password" name="password" placeholder="Password" required="">
-					<button>Sign up</button>
+					<input type="text" id="name-up" name="name" placeholder="Name" required="">
+					<input type="email" id="email-up" name="email" placeholder="Email" required="">
+					<input type="text" id="phone-up" name="phone" placeholder="Phone Number" required="">
+					<input type="password" id="password-up" name="password" placeholder="Password" required="">
+					<button id="sign-up-btn">Sign up</button>
 				</form>
 			</div>
 
 			<div class="login">
 				<form>
 					<label for="chk" aria-hidden="true">Login</label>
-					<input type="email" name="email" placeholder="Email" required="">
-					<input type="password" name="pswd" placeholder="Password" required="">
-					<button>Login</button>
+					<input type="email" id="email-in" name="email" placeholder="Email" required="">
+					<input type="password" id="password-in" name="pswd" placeholder="Password" required="">
+					<button id="sign-in-btn">Login</button>
 				</form>
 			</div>
 	</div>
+	<script src="./auth.js"></script>
+	<!-- axios - for network call --> 
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
 </body>
 </html>
