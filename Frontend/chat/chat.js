@@ -1,5 +1,5 @@
 var state;
-let allChats=[];
+let allChats;
 const chatUrl='http://localhost:3000/chats'
 let logoutBtn=document.getElementById('logout')
 let sendBtn=document.getElementById('send')
@@ -59,58 +59,98 @@ function sendMessage(e){
         },
         headers:{'Authorization': state.token}
     }).then(response=>{
-        console.log(response)
-        getChats()
+        return
     }).catch(err=>console.log(err))
 }
 
 // Get Chats
 function getChats(){
-    axios({
-        method:'get',
-        url: chatUrl,
-        headers:{'Authorization': state.token}
-    }).then(response=>{
-        allChats=response.data;
-        let chats=document.querySelector('.chats')
-        chats.innerHTML=""
-        if(response.data.length==0){
-            let p=document.createElement('p')
-            p.className='info'
-            p.innerHTML='No Chats Yet!'
-            chats.appendChild(p)
-        }else{
-            response.data.map(chat=>{
+    allChats=JSON.parse(localStorage.getItem('chats'))
+    if(allChats==null){
+        axios({
+            method:'get',
+            url: chatUrl,
+            headers:{'Authorization': state.token}
+        }).then(response=>{
+            localStorage.setItem('chats', JSON.stringify(response.data))
+            let chats=document.querySelector('.chats')
+            chats.innerHTML=""
+            if(response.data.length==0){
                 let p=document.createElement('p')
-                p.className=state.userId==chat.userId?'message sender':"message"
-                p.innerHTML=state.userId==chat.userId?chat.message:`${chat.name} : ${chat.message}`
+                p.className='info'
+                p.innerHTML='No Chats Yet!'
                 chats.appendChild(p)
-            })
-        }
-        // console.log(response)
-        setInterval(checkNewChats, 1000);  // Update Chat Every Second. 
-    }).catch(err=>console.log(err))
+            }else{
+                response.data.map(chat=>{
+                    let p=document.createElement('p')
+                    p.className=state.userId==chat.userId?'message sender':"message"
+                    p.innerHTML=state.userId==chat.userId?chat.message:`${chat.name} : ${chat.message}`
+                    chats.appendChild(p)
+                    scrollDown()
+                })
+            }
+        }).catch(err=>console.log(err))
+    }else if(allChats.length>0){
+        axios({
+            method:'get',
+            url: chatUrl,
+            params:{lastId:allChats[allChats.length-1].id},
+            headers:{'Authorization': state.token}
+        }).then(response=>{
+            if(response.data.length>0){
+                allChats=[...allChats, ...response.data]
+                let chats=document.querySelector('.chats')
+                chats.innerHTML=""
+                allChats.map(chat=>{
+                    let p=document.createElement('p')
+                    p.className=state.userId==chat.userId?'message sender':"message"
+                    p.innerHTML=state.userId==chat.userId?chat.message:`${chat.name} : ${chat.message}`
+                    chats.appendChild(p)
+                    scrollDown()
+                })
+            }
+            else if(response.data.length==0){
+                let chats=document.querySelector('.chats')
+                chats.innerHTML=""
+                allChats.map(chat=>{
+                    let p=document.createElement('p')
+                    p.className=state.userId==chat.userId?'message sender':"message"
+                    p.innerHTML=state.userId==chat.userId?chat.message:`${chat.name} : ${chat.message}`
+                    chats.appendChild(p)
+                    scrollDown()
+                })
+            }
+        }).catch(err=>console.log(err))
+    }else if(allChats.length==0){
+        axios({
+            method:'get',
+            url: chatUrl,
+            headers:{'Authorization': state.token}
+        }).then(response=>{
+            localStorage.setItem('chats', JSON.stringify(response.data))
+            let chats=document.querySelector('.chats')
+            chats.innerHTML=""
+            if(response.data.length==0){
+                let p=document.createElement('p')
+                p.className='info'
+                p.innerHTML='No Chats Yet!'
+                chats.appendChild(p)
+            }else{
+                response.data.map(chat=>{
+                    let p=document.createElement('p')
+                    p.className=state.userId==chat.userId?'message sender':"message"
+                    p.innerHTML=state.userId==chat.userId?chat.message:`${chat.name} : ${chat.message}`
+                    chats.appendChild(p)
+                    scrollDown()
+                })
+            }
+        }).catch(err=>console.log(err))
+    }
 }
 
-// Check New Chats
-function checkNewChats(){
-    axios({
-        method:'get',
-        url: chatUrl,
-        headers:{'Authorization': state.token}
-    }).then(response=>{
-        if (response.data.length!==allChats.length){
-            getChats()
-        }
-        else{
-            return;
-        }
-    }).catch(err=>console.log(err))
-}
-
+// DOM
 window.addEventListener('DOMContentLoaded', ()=>{
-    getChats()
-    scrollDown()
+    setInterval(getChats, 1000)
     checkInput()
 })
 
