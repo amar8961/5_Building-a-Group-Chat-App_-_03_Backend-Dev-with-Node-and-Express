@@ -1,4 +1,5 @@
 var state;
+let allChats=[];
 const chatUrl='http://localhost:3000/chats'
 let logoutBtn=document.getElementById('logout')
 let sendBtn=document.getElementById('send')
@@ -23,11 +24,13 @@ function checkAuthState(){
 
 checkAuthState()
 
+// logout
 function logout(){
     sessionStorage.removeItem('auth')
     checkAuthState()
 }
 
+// Input Check
 function checkInput(){
     if(messageInp.value==""||message.value.trim().length===0){
         sendBtn.style.display="none"
@@ -38,6 +41,7 @@ function checkInput(){
     }
 }
 
+// Send/Post Message
 function sendMessage(e){
     try{
         e.preventDefault()
@@ -60,12 +64,14 @@ function sendMessage(e){
     }).catch(err=>console.log(err))
 }
 
+// Get Chats
 function getChats(){
     axios({
         method:'get',
         url: chatUrl,
         headers:{'Authorization': state.token}
     }).then(response=>{
+        allChats=response.data;
         let chats=document.querySelector('.chats')
         chats.innerHTML=""
         if(response.data.length==0){
@@ -81,10 +87,26 @@ function getChats(){
                 chats.appendChild(p)
             })
         }
-        console.log(response)
+        // console.log(response)
+        setInterval(checkNewChats, 1000);  // Update Chat Every Second. 
     }).catch(err=>console.log(err))
 }
 
+// Check New Chats
+function checkNewChats(){
+    axios({
+        method:'get',
+        url: chatUrl,
+        headers:{'Authorization': state.token}
+    }).then(response=>{
+        if (response.data.length!==allChats.length){
+            getChats()
+        }
+        else{
+            return;
+        }
+    }).catch(err=>console.log(err))
+}
 
 window.addEventListener('DOMContentLoaded', ()=>{
     getChats()
@@ -92,6 +114,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
     checkInput()
 })
 
+// Scroll
 function scrollDown(){
     let chats=document.querySelector('.chats')
     chats.scrollTop=chats.scrollHeight
