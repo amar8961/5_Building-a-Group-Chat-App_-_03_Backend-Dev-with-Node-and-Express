@@ -4,10 +4,8 @@
 }
 
 #app {
-  /* width: 52vh;
-  height: 90vh; */
-  width: 100%;
-  height: 100%;
+  width: 52vh;
+  height: 90vh;
   padding: 6vh;
   background: #fff;
   box-shadow: 0 0 12px #2d3d49;
@@ -29,7 +27,7 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
+    width: 52vh;
     height: 100%;
     transition: display .5s ease-in-out;
 }
@@ -56,8 +54,7 @@ h2 {
 }
 
 .form{
-    /* width: 52vh; */
-    width: 100%;
+    width: 52vh;
     position: absolute;
     bottom: 0;
     z-index: 999;
@@ -75,6 +72,7 @@ h2 {
     outline: none;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     border-radius: 1rem;
+    transition: width .5s ease-in-out;
     /* border: none; */
 }
 
@@ -83,6 +81,7 @@ h2 {
     max-height: 31rem;
     text-align: center;
     align-items: center;
+    width: 52vh;
 }
 
 .message{
@@ -106,7 +105,7 @@ h2 {
     display: block;
     text-align: center;
     clear: both;
-    background-color: yellow;
+    background-color: #E9E9E9;
     color: #000;
     width: fit-content;
     border-radius: .4rem;
@@ -120,6 +119,7 @@ h2 {
     font-size: 1.6rem;
     float: right;
     margin: 0.4rem .4rem 0 0;
+    display: flex;
 }
 
 #logout{
@@ -135,7 +135,7 @@ input:focus{
 .form form input{
     display: inline-block;
 }
-
+  
 
 html, body {
   font-size: 2.5vh;

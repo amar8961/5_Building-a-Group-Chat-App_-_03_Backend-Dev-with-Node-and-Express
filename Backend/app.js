@@ -5,6 +5,10 @@ const helmet = require('helmet')
 
 const sequelize=require('./util/database')
 const userRoutes=require('./routes/user')
+const chatRoutes=require('./routes/chats')
+
+const Users=require('./models/users')
+const Chats=require('./models/chats')
 
 const app=express();
 
@@ -15,9 +19,13 @@ app.use(bodyParser.json({extended:false}))
 app.use(bodyParser.urlencoded({extended:false}))
 
 app.use(userRoutes)
+app.use(chatRoutes)
+
+Users.hasMany(Chats)
+Chats.belongsTo(Users)
 
 sequelize
-//  .sync({ force: true })
+// .sync({ force: true })
 .sync()
 .then(response=>{
     console.log(response)

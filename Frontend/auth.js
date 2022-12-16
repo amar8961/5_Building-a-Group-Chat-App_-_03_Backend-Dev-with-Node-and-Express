@@ -85,7 +85,7 @@ function signIn(e){
                     alert("Your email is not registered with us!")
                 }else if(response.data.code==1){
                     alert("Sign In Successful!")
-                    sessionStorage.setItem('auth', JSON.stringify({token:response.data.token}))
+                    sessionStorage.setItem('auth', JSON.stringify({token:response.data.token, userId:response.data.userId}))
                     checkAuthState()
                 }
         }).catch(err=>console.log(err))
