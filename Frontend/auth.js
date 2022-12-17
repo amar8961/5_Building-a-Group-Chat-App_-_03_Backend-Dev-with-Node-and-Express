@@ -2,9 +2,13 @@ const userUrl='http://localhost:3000/users'
 let signUpBtn=document.getElementById('sign-up-btn')
 let signInBtn=document.getElementById('sign-in-btn')
 var state;
+let passIn=document.getElementById('password-in')
+let passUp=document.getElementById('password-up')
 
 signUpBtn.addEventListener('click', signUp)
 signInBtn.addEventListener('click', signIn)
+passIn.addEventListener('keydown', (e)=>{e.code=='Enter'?signIn():null})
+passUp.addEventListener('keydown', (e)=>{e.code=='Enter'?signUp():null})
 
 // Sign up
 function signUp(e){
@@ -54,8 +58,6 @@ function signUp(e){
 
 // Sign in
 function signIn(e){
-    // e.preventDefault()
-
     let emailInp=document.getElementById('email-in').value
     let passInp=document.getElementById('password-in').value
 
@@ -98,7 +100,7 @@ function checkAuthState(){
     if (state==null||state==undefined||state==''){
         return
     }else if(state.token){
-        location.replace('./chat/chat.html')
+        location.replace('./groups/groups.html')
     }else{
         return
     }

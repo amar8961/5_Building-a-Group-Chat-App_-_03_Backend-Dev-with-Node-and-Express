@@ -1,22 +1,28 @@
-var state;
+var state, group;
 let allChats;
 const chatUrl='http://localhost:3000/chats'
-let logoutBtn=document.getElementById('logout')
+let backBtn=document.getElementById('back')
 let sendBtn=document.getElementById('send')
 let messageInp=document.getElementById('message')
 
 // Event Listeners
-logoutBtn.addEventListener('click', logout)
+backBtn.addEventListener('click', goBack)
 sendBtn.addEventListener('click', sendMessage)
 messageInp.addEventListener('input', checkInput)
 
-//Check if already Logged In
+//Check if already Logged In and Group ID exists
 function checkAuthState(){
     state=JSON.parse(sessionStorage.getItem('auth'))
+    group=sessionStorage.getItem('groupId')
     if (state==null||state==undefined||state==''){
         location.replace('../auth.html')
     }else if(state.token){
-        return
+        if(group==null||group==undefined||group==''){
+            location.replace('../groups/groups.html')
+        }
+        else{
+            return
+        }
     }else{
         location.replace('../auth.html')
     }
@@ -24,10 +30,12 @@ function checkAuthState(){
 
 checkAuthState()
 
-// logout
-function logout(){
-    sessionStorage.removeItem('auth')
-    checkAuthState()
+// Back
+function goBack(){
+    localStorage.removeItem('chats')
+    localStorage.removeItem('groupId')
+    sessionStorage.removeItem('groupId')
+    location.replace('../groups/groups.html')
 }
 
 // Input Check
@@ -50,12 +58,16 @@ function sendMessage(e){
         console.log(err)
     }
     let message=messageInp.value
+    if(message.trim().length==0){
+        return
+    }
     messageInp.value=""
     axios({
         method:'post',
         url: chatUrl,
         data:{
-            message:message
+            message:message,
+            groupId:parseInt(group)
         },
         headers:{'Authorization': state.token}
     }).then(response=>{
@@ -70,6 +82,7 @@ function getChats(){
         axios({
             method:'get',
             url: chatUrl,
+            params:{groupId:group},
             headers:{'Authorization': state.token}
         }).then(response=>{
             localStorage.setItem('chats', JSON.stringify(response.data))
@@ -94,7 +107,7 @@ function getChats(){
         axios({
             method:'get',
             url: chatUrl,
-            params:{lastId:allChats[allChats.length-1].id},
+            params:{groupId:group, lastId:allChats[allChats.length-1].id},
             headers:{'Authorization': state.token}
         }).then(response=>{
             if(response.data.length>0){
@@ -125,6 +138,7 @@ function getChats(){
         axios({
             method:'get',
             url: chatUrl,
+            params:{groupId:group},
             headers:{'Authorization': state.token}
         }).then(response=>{
             localStorage.setItem('chats', JSON.stringify(response.data))
