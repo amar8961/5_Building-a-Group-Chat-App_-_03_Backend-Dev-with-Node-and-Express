@@ -162,8 +162,30 @@ function getChats(){
     }
 }
 
+// Set Group Header
+function setHeader(){
+    let header=document.querySelector('.chat-desc')
+    header.id=group
+    let img=document.createElement('img')
+    img.src="../Assets/default_icon.png"
+    img.id=group
+    header.appendChild(img)
+    let p=document.createElement('p')
+    p.innerHTML=sessionStorage.getItem('groupName')
+    p.id=group
+    header.appendChild(p)
+    header.addEventListener('click', manageGroup)
+}
+
+// Manage Group
+function manageGroup(e){
+    console.log(e.target.id)
+    location.href='../manage/manage.html'
+}
+
 // DOM
 window.addEventListener('DOMContentLoaded', ()=>{
+    setHeader()
     setInterval(getChats, 1000)
     checkInput()
 })
